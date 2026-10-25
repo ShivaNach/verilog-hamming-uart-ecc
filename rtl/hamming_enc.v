@@ -1,4 +1,4 @@
-module hamming_enc_gen #(
+module hamming_enc #(
     parameter DATA_LEN = 8,
     parameter PARITIES = $clog2(DATA_LEN) + 1, //NOTE: MUST BE 2^n ELSE WOULD FAIL 
     parameter CODE_LEN = DATA_LEN + PARITIES 

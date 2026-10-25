@@ -15,14 +15,14 @@ module hamming_check #(
     localparam P = $clog2(W) + 1;
     localparam C = W + P;
 
-    reg  [W-1:0] d;
+    reg  [W-1:0] d; // data to be sent
     wire [C-1:0] code;
-    reg  [C-1:0] rx;
-    wire [W-1:0] q;
+    reg  [C-1:0] rx; // separate code sent to the decoder to simulate corruption of data
+    wire [W-1:0] q; // output data (ideally same as input, but can be corrupted with 2 bit or more error)
     wire         err;
 
-    hamming_enc_gen #(.DATA_LEN(W)) enc (.data_in(d),  .code_out(code));
-    hamming_dec     #(.DATA_LEN(W)) dec (.code_in(rx), .data_out(q), .is_error(err));
+    hamming_enc #(.DATA_LEN(W)) enc (.data_in(d),  .code_out(code));
+    hamming_dec #(.DATA_LEN(W)) dec (.code_in(rx), .data_out(q), .is_error(err));
 
     integer k, a, b;
     integer n0 = 0, n0_bad = 0, n1 = 0, n1_bad = 0, n2 = 0, n2_missed = 0, n2_wrong = 0;

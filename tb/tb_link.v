@@ -1,4 +1,4 @@
-// End-to-end: hamming_enc_gen -> uart_tx -> channel (corrupts the serial line) -> uart_rx -> hamming_dec.
+// End-to-end: hamming_enc -> uart_tx -> channel (corrupts the serial line) -> uart_rx -> hamming_dec.
 // The testbench holds 'data' stable for the whole frame, as the encoder output feeds uart_tx directly.
 //   1. no error, all words          : same data out, is_error = 0
 //   2. every single-bit line error  : same data out, is_error = 1   (all 12 slots incl. parity bits)
@@ -22,7 +22,7 @@ module tb_link;
 
     wire [CODE_LEN-1:0] code_tx, code_rx;
 
-    hamming_enc_gen #(.DATA_LEN(DATA_LEN)) u_enc (
+    hamming_enc #(.DATA_LEN(DATA_LEN)) u_enc (
         .data_in(data), .code_out(code_tx));
 
     uart_tx #(.WIDTH(CODE_LEN), .CLKS_PER_BIT(CPB)) u_tx (

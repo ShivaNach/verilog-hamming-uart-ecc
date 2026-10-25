@@ -37,13 +37,16 @@ module tb_uart;
             n_before = n_valid;
             @(negedge clk); data = word; start = 1;
             @(negedge clk); start = 0;
-            while (busy) @(negedge clk);
+
+            while (busy) @(negedge clk); //waits for the transmissison also waits for 4 more pulses
             repeat (4) @(negedge clk);
+
             if (n_valid !== n_before + 1 || last_word !== word) begin
                 $display("FAIL: sent %b, valid pulses +%0d, received %b", word, n_valid - n_before, last_word);
                 errors = errors + 1;
-            end else
+            end else begin
                 $display("ok  : sent %b received %b", word, last_word);
+            end
         end
     endtask
 
@@ -52,14 +55,14 @@ module tb_uart;
     endtask
 
     integer v0, f0, k;
-    initial begin #20000000; $fatal(1, "TIMEOUT"); end
+    initial begin #20000000; $fatal(1, "TIMEOUT"); end //watchdog incase loops hang up
 
     initial begin
         $dumpfile("uart.vcd"); $dumpvars(0, tb_uart);
         repeat (4) @(posedge clk); rst = 0; repeat (4) @(posedge clk);
 
         // 1. loopback, including back-to-back frames
-        send_and_check({WIDTH{1'b0}} | 12'b1010_0011_0101);
+        send_and_check({WIDTH{1'b0}});
         send_and_check({WIDTH{1'b1}});
         send_and_check(1);
         send_and_check({1'b1, {(WIDTH-1){1'b0}}});

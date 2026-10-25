@@ -1,7 +1,5 @@
 module uart_tx #(
     parameter WIDTH        = 12,
-    parameter BAUD         = 9600,
-    parameter CLK_FREQ     = 50_000_000,
     parameter CLKS_PER_BIT = CLK_FREQ / BAUD
 )(
     input  wire             clk,

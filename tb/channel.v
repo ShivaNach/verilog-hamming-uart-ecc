@@ -14,11 +14,11 @@ module channel #(
     input  wire                flip_stop,
     output wire                rx_out
 );
-    localparam FRAME_CLKS = (CODE_LEN + 2) * CLKS_PER_BIT;
+    localparam FRAME_CLKS = (CODE_LEN + 2) * CLKS_PER_BIT; // clock cycles required for start + stop + data to be sent
 
     reg        prev_tx;
     reg        active;
-    reg [31:0] cnt;                       // clock cycles since the line fell
+    reg [$clog2(FRAME_CLKS) - 1:0] cnt;                       // clock cycles since the line fell
 
     always @(posedge clk or posedge rst) begin
         if (rst) begin
@@ -36,7 +36,7 @@ module channel #(
         end
     end
 
-    wire [31:0] slot = cnt / CLKS_PER_BIT;            // 0 = start bit, 1..CODE_LEN = data, CODE_LEN+1 = stop
+    wire [$clog2(FRAME_CLKS) - 1:0] slot = cnt / CLKS_PER_BIT;            // 0 = start bit, 1..CODE_LEN = data, CODE_LEN+1 = stop
     wire flip = active && (
                     (slot >= 1 && slot <= CODE_LEN && flip_mask[slot - 1]) ||
                     (slot == CODE_LEN + 1 && flip_stop));
